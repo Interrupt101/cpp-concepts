@@ -340,7 +340,7 @@ It decides:
 - Transparency
 - Effects
 
-### 🖥 Step 6: Tests & Output
+### Step 6: Tests & Output
 Before a pixel appears on screen, OpenGL may perform tests:
 - Depth test (is it behind something?)
 - Stencil test
