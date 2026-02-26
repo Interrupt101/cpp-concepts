@@ -1,3 +1,4 @@
+// a triangle that has a color that changes smoothly
 #include <glad/glad.h>   // GLAD must be included BEFORE GLFW
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -7,34 +8,29 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-// Input processing
-void processInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
 // Vertex shader source (as a C string)
 const char* vertexShaderSource = R"(
     #version 330 core
-    layout (location = 0) in vec3 aPos;  // Input: vertex position
+    layout (location = 0) in vec3 aPos;
 
     void main() {
-        // gl_Position is the built-in output: clip-space position
         gl_Position = vec4(aPos, 1.0);
     }
 )";
-
 // Fragment shader source
 const char* fragmentShaderSource = R"(
     #version 330 core
-    out vec4 FragColor;  // Output: RGBA color
+    out vec4 FragColor;
+
+    uniform vec4 ourColor;
 
     void main() {
-        FragColor = vec4(1.0, 0.5, 0.2, 1.0);  // Orange
+        FragColor = ourColor;
     }
 )";
 
-int main() {
+int main()
+{
     // --- 1. Initialize GLFW ---
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
@@ -45,9 +41,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // macOS requires this:
-    // glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
+    
     // --- 2. Create a window ---
     GLFWwindow* window = glfwCreateWindow(800, 600, "Hello OpenGL", nullptr, nullptr);
     if (!window) {
@@ -55,7 +49,7 @@ int main() {
         glfwTerminate();
         return -1;
     }
-
+    
     // Make this window's context current on this thread
     glfwMakeContextCurrent(window);
 
@@ -63,7 +57,6 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // --- 3. Initialize GLAD ---
-    // GLAD loads OpenGL function pointers from the driver
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD\n";
         return -1;
@@ -74,56 +67,39 @@ int main() {
 
     // Three vertices of a triangle (x, y, z)
     float vertices[] = {
-       -0.5f, -0.5f, 0.0f,  // bottom-left
-        0.5f, -0.5f, 0.0f,  // bottom-right
-        0.0f,  0.5f, 0.0f   // top-center
+       -0.5f, -0.5f, 0.0f,  
+        0.5f, -0.5f, 0.0f, 
+        0.0f,  0.5f, 0.0f  
     };
 
-    /*
-    VBO = actual vertex data (numbers)
-    VAO = how to read those numbers
-    */
-
-    // Vertex Array Object — remembers how to interpret vertex data
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);  // Start recording
-
-    // Vertex Buffer Object — stores raw vertex data on the GPU
-    unsigned int VBO; // ID number given by OpenGL. Identifies a GPU buffer object.
+    // Vertex Buffer Object
+    unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // Upload vertices to GPU (STATIC_DRAW = uploaded once, used many times)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // I will set this data once, and use it many times for drawing.
+    // Vertex Array Object
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     // Tell OpenGL how to interpret the buffer:
     glVertexAttribPointer(
-        0,                  // attribute location
-        3,                  // number of values (x,y,z)
-        GL_FLOAT,           // data type
-        GL_FALSE,           // normalize?
-        3 * sizeof(float),  // stride
-        (void*)0            // offset
+        0,                  
+        3,                  
+        GL_FLOAT,           
+        GL_FALSE,           
+        3 * sizeof(float),  
+        (void*)0            
     );
-
     glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 
-    glBindVertexArray(0);  // Unbind VAO (stop recording)
 
     // Compile vertex shader
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
     glCompileShader(vertexShader);
-
-    // Check for errors
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success); // Give me information about THIS shader. Type of info : GL_COMPILE_STATUS
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog); 
-        std::cerr << "Vertex shader error:\n" << infoLog << "\n";
-    }
 
     // Compile fragment shader
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -136,30 +112,47 @@ int main() {
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
 
+    // Check for errors
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
+        std::cerr << "Vertex shader error:\n" << infoLog << "\n";
+    }
+
     // Shaders are now baked into the program; delete the individual ones
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
     // --- 4. Render loop ---
     while (!glfwWindowShouldClose(window)) {
-        // Handle input
-        processInput(window);
-
-        // Clear the screen to a dark teal color
-        glClearColor(0.1f, 0.15f, 0.15f, 1.0f); // When you clear the screen, use THIS color.
-        glClear(GL_COLOR_BUFFER_BIT); // Fills the screen with the currently set clear color.
+        glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        float timeValue = glfwGetTime();
+        // Create value between 0 and 1 using sine
+        float mixValue = (sin(timeValue) / 2.0f) + 0.5f;
+        // Red increases, Blue decreases
+        float red = mixValue;
+        float blue = 1.0f - mixValue;
+
+        int colorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(colorLocation, red, 0.0f, blue, 1.0f);
+
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);  // Draw 3 vertices as 1 triangle
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Swap front/back buffers (double buffering)
-        glfwSwapBuffers(window); // Front Buffer -> currently visible on screen - Back Buffer -> where you draw the next frame
+        glfwSwapBuffers(window);
 
         // Poll events (keyboard, mouse, window events)
-        glfwPollEvents(); // Comment this out and the window will be unresponsive
+        glfwPollEvents();
     }
 
     glfwTerminate();
     return 0;
+
 }
