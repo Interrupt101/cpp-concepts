@@ -257,6 +257,101 @@ Understanding the pipeline is fundamental. Data flows from your CPU to pixels on
 - **Rasterization** — determines which pixels each triangle covers.
 - **Depth Testing** — discards fragments hidden behind others.
 
+### Step 1: Vertex Data (Your Input)
+You start with vertices in C++:
+```cpp
+float vertices[] = {
+   -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f,  0.5f, 0.0f
+};
+```
+This defines **3 points → a triangle**.
+These go into a **VBO**.
+At this stage:
+- They are just numbers.
+- OpenGL doesn’t know what they mean yet.
+
+---
+
+### Step 2: Vertex Shader (Runs on GPU)
+The vertex shader runs **once per vertex**.
+Example:
+```glsl
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+}
+```
+If you have **3 vertices → this runs 3 times.**
+#### What does it do?
+It calculates the **final position** of each vertex.
+**Important:**  
+It must output `gl_Position`.
+After this step:
+Your triangle is positioned in **Normalized Device Coordinates (NDC)**:
+- X: -1 to 1
+- Y: -1 to 1
+
+### 🔺 Step 3: Primitive Assembly
+Now OpenGL connects the vertices.
+If you called:
+```cpp
+glDrawArrays(GL_TRIANGLES, 0, 3);
+```
+OpenGL interprets:
+- Every 3 vertices = 1 triangle
+So it forms a triangle from your 3 processed vertices.
+- No shaders run here.
+- It just connects points.
+
+### Step 4: Rasterization
+This is where magic starts ✨
+OpenGL takes your triangle and figures out:
+- Which pixels on the screen are inside the triangle?
+It converts the triangle shape into many tiny **fragments** (potential pixels).
+Think of it like coloring inside the triangle with tiny dots.
+Before rasterization:
+- You only had 3 vertices.
+After rasterization:
+- You may have thousands of fragments.
+
+### 🎨 Step 5: Fragment Shader (Runs Per Pixel)
+Now the fragment shader runs for each fragment.
+Example:
+```glsl
+#version 330 core
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+}
+```
+If your triangle covers **10,000 pixels**:
+This shader runs 10,000 times.
+It decides:
+- The final color of each pixel
+- Lighting
+- Texture color
+- Transparency
+- Effects
+
+### 🖥 Step 6: Tests & Output
+Before a pixel appears on screen, OpenGL may perform tests:
+- Depth test (is it behind something?)
+- Stencil test
+- Blending
+If it passes → it goes to the **framebuffer**.
+Then:
+```cpp
+glfwSwapBuffers(window);
+```
+The image appears on screen.
+
 ---
 
 ## 5. Drawing Your First Triangle
