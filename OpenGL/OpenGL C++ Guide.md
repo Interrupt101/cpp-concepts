@@ -296,7 +296,7 @@ Your triangle is positioned in **Normalized Device Coordinates (NDC)**:
 - X: -1 to 1
 - Y: -1 to 1
 
-### 🔺 Step 3: Primitive Assembly
+### Step 3: Primitive Assembly
 Now OpenGL connects the vertices.
 If you called:
 ```cpp
@@ -319,7 +319,7 @@ Before rasterization:
 After rasterization:
 - You may have thousands of fragments.
 
-### 🎨 Step 5: Fragment Shader (Runs Per Pixel)
+### Step 5: Fragment Shader (Runs Per Pixel)
 Now the fragment shader runs for each fragment.
 Example:
 ```glsl
