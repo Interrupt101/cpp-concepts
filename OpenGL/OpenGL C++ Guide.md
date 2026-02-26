@@ -244,27 +244,8 @@ int main() {
 ---
 
 ## 4. The Rendering Pipeline
-
 Understanding the pipeline is fundamental. Data flows from your CPU to pixels on screen:
-
-```
-CPU Memory
-    │
-    ▼
-[Vertex Data] ──► Vertex Shader ──► Primitive Assembly
-                                          │
-                                          ▼
-                               Geometry Shader (optional)
-                                          │
-                                          ▼
-                               Rasterization (triangles → fragments)
-                                          │
-                                          ▼
-                               Fragment Shader ──► Per-Fragment Tests
-                                                         │
-                                                         ▼
-                                                   Framebuffer (screen)
-```
+![Pipeline Diagram](Images/pipeline.png)
 
 **Stages you control with shaders:**
 
