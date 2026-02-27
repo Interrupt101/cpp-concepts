@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex01_animatedTriangleColor"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex02_DrawTwoRectangles", "..\ex02_DrawTwoRectangles\ex02_DrawTwoRectangles.vcxproj", "{BC363539-9B29-42D8-8048-2A602F992E5C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ex03_Shaders", "..\ex03_Shaders\ex03_Shaders.vcxproj", "{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{BC363539-9B29-42D8-8048-2A602F992E5C}.Release|x64.Build.0 = Release|x64
 		{BC363539-9B29-42D8-8048-2A602F992E5C}.Release|x86.ActiveCfg = Release|Win32
 		{BC363539-9B29-42D8-8048-2A602F992E5C}.Release|x86.Build.0 = Release|Win32
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Debug|x64.ActiveCfg = Debug|x64
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Debug|x64.Build.0 = Debug|x64
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Debug|x86.ActiveCfg = Debug|Win32
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Debug|x86.Build.0 = Debug|Win32
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Release|x64.ActiveCfg = Release|x64
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Release|x64.Build.0 = Release|x64
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Release|x86.ActiveCfg = Release|Win32
+		{4B3B6AED-A4AF-4AD3-85ED-6A2940D9F08A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

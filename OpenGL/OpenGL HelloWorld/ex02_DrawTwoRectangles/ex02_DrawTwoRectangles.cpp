@@ -195,7 +195,7 @@ int main()
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         // glDrawArrays(GL_TRIANGLES, 0, 6);
-        int loc = glGetUniformLocation(shaderProgram, "uColor");
+        int loc = glGetUniformLocation(shaderProgram, "uColor"); 
         glUniform4f(loc, 1, 0, 0, 1);   // red
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glUniform4f(loc, 0, 0, 1, 1);   // blue
