@@ -2,34 +2,62 @@
 #include <glad/glad.h>   // GLAD must be included BEFORE GLFW
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 // Callback: called whenever the window is resized
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-// Vertex shader source (as a C string)
-const char* vertexShaderSource = R"(
-    #version 330 core
-    layout (location = 0) in vec3 aPos;
+struct ShaderProgramSource
+{
+    std::string VertexSource;
+    std::string FragmentSource;
+};
 
-    void main() {
-        gl_Position = vec4(aPos, 1.0);
+static ShaderProgramSource ParseShader(const std::string& filePath)
+{
+    std::ifstream stream(filePath);
+    if (!stream.is_open())
+    {
+        std::cerr << "Failed to open shader file: " << filePath << std::endl;
     }
-)";
-// Fragment shader source
-const char* fragmentShaderSource = R"(
-    #version 330 core
-    out vec4 FragColor;
 
-    uniform vec4 ourColor;
+    enum class ShaderType
+    {
+        NONE = -1,
+        VERTEX = 0,
+        FRAGMENT = 1
+    };
 
-    void main() {
-        FragColor = ourColor;
+    std::string line;
+    std::stringstream ss[2];
+    ShaderType type = ShaderType::NONE;
+
+    while (std::getline(stream, line))
+    {
+        if (line.find("#shader") != std::string::npos)
+        {
+            if (line.find("vertex") != std::string::npos)
+                type = ShaderType::VERTEX;
+            else if (line.find("fragment") != std::string::npos)
+                type = ShaderType::FRAGMENT;
+        }
+        else
+        {
+            if (type != ShaderType::NONE)
+                ss[(int)type] << line << '\n';
+        }
     }
-)";
 
-unsigned int CompileShader(const char* shaderSource,  GLenum shaderType)
+    return {
+        ss[0].str(),
+        ss[1].str()
+    };
+}
+
+unsigned int CompileShader(const char* shaderSource, GLenum shaderType)
 {
     unsigned int shader = glCreateShader(shaderType);
     glShaderSource(shader, 1, &shaderSource, nullptr);
@@ -58,7 +86,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    
+
     // --- 2. Create a window ---
     GLFWwindow* window = glfwCreateWindow(800, 600, "Hello OpenGL", nullptr, nullptr);
     if (!window) {
@@ -66,7 +94,7 @@ int main()
         glfwTerminate();
         return -1;
     }
-    
+
     // Make this window's context current on this thread
     glfwMakeContextCurrent(window);
 
@@ -82,11 +110,27 @@ int main()
     // Set the initial viewport
     glViewport(0, 0, 800, 600);
 
-    // Three vertices of a triangle (x, y, z)
     float vertices[] = {
-       -0.5f, -0.5f, 0.0f,  
-        0.5f, -0.5f, 0.0f, 
-        0.0f,  0.5f, 0.0f  
+        // rectangle 1 (left)
+        -0.9f, -0.5f, 0.0f,  // 0
+        -0.1f, -0.5f, 0.0f,  // 1
+        -0.1f,  0.5f, 0.0f,  // 2
+        -0.9f,  0.5f, 0.0f,  // 3
+
+        // rectangle 2 (right)
+         0.1f, -0.5f, 0.0f,  // 4
+         0.9f, -0.5f, 0.0f,  // 5
+         0.9f,  0.5f, 0.0f,  // 6
+         0.1f,  0.5f, 0.0f   // 7
+    };
+    unsigned int indices[] = {
+        // rect 1
+        0, 1, 2,
+        2, 3, 0,
+
+        // rect 2 (same pattern, +4)
+        4, 5, 6,
+        6, 7, 4
     };
 
     // Vertex Array Object
@@ -100,22 +144,29 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // Element Buffer Object
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     // Tell OpenGL how to interpret the buffer:
     glVertexAttribPointer(
-        0,                  
-        3,                  
-        GL_FLOAT,           
-        GL_FALSE,           
-        3 * sizeof(float),  
-        (void*)0            
+        0,
+        3,
+        GL_FLOAT,
+        GL_FALSE,
+        3 * sizeof(float),
+        (void*)0
     );
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
 
+    ShaderProgramSource shaderSource = ParseShader("Basic.shader");
     // Compile vertex shader
-    unsigned int vertexShader = CompileShader(vertexShaderSource, GL_VERTEX_SHADER);
-    unsigned int fragmentShader = CompileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+    unsigned int vertexShader = CompileShader(shaderSource.VertexSource.c_str(), GL_VERTEX_SHADER);
+    unsigned int fragmentShader = CompileShader(shaderSource.FragmentSource.c_str(), GL_FRAGMENT_SHADER);
 
     // Link into a shader program
     unsigned int shaderProgram = glCreateProgram();
@@ -142,19 +193,13 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
-
-        float timeValue = glfwGetTime();
-        // Create value between 0 and 1 using sine
-        float mixValue = (sin(timeValue) / 2.0f) + 0.5f;
-        // Red increases, Blue decreases
-        float red = mixValue;
-        float blue = 1.0f - mixValue;
-
-        int colorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(colorLocation, red, 0.0f, blue, 1.0f);
-
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 6);
+        int loc = glGetUniformLocation(shaderProgram, "uColor");
+        glUniform4f(loc, 1, 0, 0, 1);   // red
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glUniform4f(loc, 0, 0, 1, 1);   // blue
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)));
 
         // Swap front/back buffers (double buffering)
         glfwSwapBuffers(window);
