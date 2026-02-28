@@ -28,9 +28,26 @@ int main()
     glViewport(0, 0, 800, 600);
     
     float vertices[] = {
-       -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        // rectangle 1 (left)
+        -0.9f, -0.5f, 0.0f,  // 0
+        -0.1f, -0.5f, 0.0f,  // 1
+        -0.1f,  0.5f, 0.0f,  // 2
+        -0.9f,  0.5f, 0.0f,  // 3
+
+        // rectangle 2 (right)
+         0.1f, -0.5f, 0.0f,  // 4
+         0.9f, -0.5f, 0.0f,  // 5
+         0.9f,  0.5f, 0.0f,  // 6
+         0.1f,  0.5f, 0.0f   // 7
+    };
+
+    unsigned int indices[] = {
+        // rect 1
+        0, 1, 2,
+        2, 3, 0,
+        // rect 2
+        4, 5, 6,
+        6, 7, 4
     };
 
     unsigned int VAO;
@@ -40,6 +57,13 @@ int main()
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -61,16 +85,15 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        
         shader.use();
-
-        float time = glfwGetTime();
-        float xOffset = sin(time) * 0.5f;
-
-        shader.setVec3("uOffset", glm::vec3(0.0f, xOffset, 0.0f));
-        shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
-
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        
+        shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)));
 
         glfwSwapBuffers(window); 
         glfwPollEvents();
