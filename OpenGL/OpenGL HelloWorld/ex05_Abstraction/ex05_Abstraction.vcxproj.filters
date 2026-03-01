@@ -3,18 +3,26 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="VertexArray.cpp" />
     <ClCompile Include="VertexBufferLayout.h" />
+    <ClCompile Include="stb_image.cpp">
+      <Filter>stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="shader.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="VertexArray.h" />
+    <ClInclude Include="stb_image.h">
+      <Filter>stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="res">
@@ -22,6 +30,9 @@
     </Filter>
     <Filter Include="res\shaders">
       <UniqueIdentifier>{871797f9-62e7-4f75-9d88-d105f58c45f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb_image">
+      <UniqueIdentifier>{021e0b5a-bd22-468d-ba6a-6f723db396f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

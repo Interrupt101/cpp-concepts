@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader.h"
+#include "Shader.h"
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -58,6 +58,8 @@ int main()
 
     // Vertex Buffer Object
     VertexBuffer vb(vertices, sizeof(vertices));
+
+    // Element Buffer Object (index)
     IndexBuffer ib(indices, sizeof(indices) / sizeof(unsigned int));
 
     VertexBufferLayout layout;
@@ -72,11 +74,6 @@ int main()
         renderer.Clear();
 
         renderer.Draw(va, ib, shader);
-        //GLCall(shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
-        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-
-        //GLCall(shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)));
-        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)) ));
 
         GLCall(glfwSwapBuffers(window));
         GLCall(glfwPollEvents());
