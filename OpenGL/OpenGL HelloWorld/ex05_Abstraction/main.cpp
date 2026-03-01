@@ -6,6 +6,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "Texture.h"
 
 int main()
 {
@@ -30,26 +31,17 @@ int main()
     glViewport(0, 0, 800, 600);
 
     float vertices[] = {
-        // rectangle 1 (left)
-        -0.9f, -0.5f, 0.0f,  // 0
-        -0.1f, -0.5f, 0.0f,  // 1
-        -0.1f,  0.5f, 0.0f,  // 2
-        -0.9f,  0.5f, 0.0f,  // 3
-
-        // rectangle 2 (right)
-         0.1f, -0.5f, 0.0f,  // 4
-         0.9f, -0.5f, 0.0f,  // 5
-         0.9f,  0.5f, 0.0f,  // 6
-         0.1f,  0.5f, 0.0f   // 7
+        // position      // texCoord
+        -0.5f, -0.5f,    0.0f, 0.0f,  // 0
+        -0.5f,  0.5f,    0.0f, 1.0f,  // 1
+         0.5f, -0.5f,    1.0f, 0.0f,  // 2
+         0.5f,  0.5f,    1.0f, 1.0f   // 3
     };
 
     unsigned int indices[] = {
-        // rect 1
+        // rect
         0, 1, 2,
-        2, 3, 0,
-        // rect 2
-        4, 5, 6,
-        6, 7, 4
+        1, 2, 3
     };
     
     // Vertex Array Object
@@ -63,20 +55,25 @@ int main()
     IndexBuffer ib(indices, sizeof(indices) / sizeof(unsigned int));
 
     VertexBufferLayout layout;
-    layout.Push<float>(3);
+    layout.Push<float>(2); // position
+    layout.Push<float>(2); // texture coords
     va.AddBuffer(vb, layout);
 
     Shader shader("vertex.shader", "fragment.shader");
 
+    Texture texture("image.png");
+    texture.Bind();
     Renderer renderer;
+
     while (!glfwWindowShouldClose(window)) {
         renderer.SetClearColor(0.1f, 0.15f, 0.15f, 1.0f);
         renderer.Clear();
 
+        shader.setInt("u_Texture", 0);
         renderer.Draw(va, ib, shader);
 
-        GLCall(glfwSwapBuffers(window));
-        GLCall(glfwPollEvents());
+        glfwSwapBuffers(window);
+        glfwPollEvents();
     }
 
     glfwTerminate();
