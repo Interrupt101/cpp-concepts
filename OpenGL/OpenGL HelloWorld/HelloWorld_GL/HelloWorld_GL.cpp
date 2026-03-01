@@ -151,8 +151,10 @@ int main() {
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);  // Draw 3 vertices as 1 triangle
-
+        glDrawArrays(GL_TRIANGLES, 0, 3);  
+        // Draw 3 vertices as 1 triangle
+        // Draws vertices in order, exactly as they appear in your VBO.
+        
         // Swap front/back buffers (double buffering)
         glfwSwapBuffers(window); // Front Buffer -> currently visible on screen - Back Buffer -> where you draw the next frame
 

@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "shader.h"
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 int main()
 {
@@ -26,9 +29,26 @@ int main()
     glViewport(0, 0, 800, 600);
 
     float vertices[] = {
-       -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        // rectangle 1 (left)
+        -0.9f, -0.5f, 0.0f,  // 0
+        -0.1f, -0.5f, 0.0f,  // 1
+        -0.1f,  0.5f, 0.0f,  // 2
+        -0.9f,  0.5f, 0.0f,  // 3
+
+        // rectangle 2 (right)
+         0.1f, -0.5f, 0.0f,  // 4
+         0.9f, -0.5f, 0.0f,  // 5
+         0.9f,  0.5f, 0.0f,  // 6
+         0.1f,  0.5f, 0.0f   // 7
+    };
+
+    unsigned int indices[] = {
+        // rect 1
+        0, 1, 2,
+        2, 3, 0,
+        // rect 2
+        4, 5, 6,
+        6, 7, 4
     };
 
     // Vertex Array Object
@@ -37,12 +57,9 @@ int main()
     glBindVertexArray(VAO);
 
     // Vertex Buffer Object
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    VertexBuffer vb(vertices, sizeof(vertices));
+    IndexBuffer ib(indices, sizeof(indices) / sizeof(unsigned int));
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    
     glVertexAttribPointer(
         0,                  // attribute location
         3,                  // number of values (x,y,z)
@@ -55,17 +72,22 @@ int main()
     glEnableVertexAttribArray(0);
     glBindVertexArray(0); 
 
+    Shader shader("vertex.shader", "fragment.shader");
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
+        shader.use();
+        
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        // Swap front/back buffers (double buffering)
+        shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+
+        shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)) ));
+
         glfwSwapBuffers(window);
-
-        // Poll events (keyboard, mouse, window events)
         glfwPollEvents(); 
     }
 

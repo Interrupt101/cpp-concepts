@@ -90,7 +90,7 @@ int main()
         glBindVertexArray(VAO);
 
         shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // Draws using an index buffer (EBO).
         
         shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)));
