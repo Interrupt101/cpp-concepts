@@ -1,5 +1,8 @@
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h>
+#pragma once
+
+class VertexArray;
+class IndexBuffer;
+class Shader;
 
 #define ASSERT(x) if (!(x)) __debugbreak();
 
@@ -11,3 +14,11 @@
 
 void GLClearError();
 bool GLLogCall(const char* function, const char* file, int line);
+
+class Renderer
+{
+public:
+    void Clear() const;
+    void SetClearColor(float r, float g, float b, float a) const;
+    void Draw(const VertexArray& va, const IndexBuffer& ib, Shader& shader);
+};

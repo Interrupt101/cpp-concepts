@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArray.h"
 
 int main()
 {
@@ -50,45 +51,35 @@ int main()
         4, 5, 6,
         6, 7, 4
     };
-
+    
     // Vertex Array Object
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    VertexArray va;
+    va.Bind();
 
     // Vertex Buffer Object
     VertexBuffer vb(vertices, sizeof(vertices));
     IndexBuffer ib(indices, sizeof(indices) / sizeof(unsigned int));
 
-    glVertexAttribPointer(
-        0,                  // attribute location
-        3,                  // number of values (x,y,z)
-        GL_FLOAT,           // data type
-        GL_FALSE,           // normalize?
-        3 * sizeof(float),  // stride
-        (void*)0            // offset
-    );
-
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0); 
+    VertexBufferLayout layout;
+    layout.Push<float>(3);
+    va.AddBuffer(vb, layout);
 
     Shader shader("vertex.shader", "fragment.shader");
 
+    Renderer renderer;
     while (!glfwWindowShouldClose(window)) {
-        glClearColor(0.1f, 0.15f, 0.15f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        shader.use();
-        
-        glBindVertexArray(VAO);
+        renderer.SetClearColor(0.1f, 0.15f, 0.15f, 1.0f);
+        renderer.Clear();
 
-        shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+        renderer.Draw(va, ib, shader);
+        //GLCall(shader.setVec4("uColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)));
+        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-        shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f));
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)) ));
+        //GLCall(shader.setVec4("uColor", glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)));
+        //GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(unsigned int)) ));
 
-        glfwSwapBuffers(window);
-        glfwPollEvents(); 
+        GLCall(glfwSwapBuffers(window));
+        GLCall(glfwPollEvents());
     }
 
     glfwTerminate();
