@@ -33,9 +33,9 @@ int multiply(int a, int b) {
 Libraries are collections of precompiled code that you can reuse in your programs. There are two main types of libraries:
 
 ## 3.1 Static Libraries (.lib or .a on Linux)
-### Purpose: Static libraries are linked directly into your executable at compile time. This means the code from the library is included in the final .exe or binary file.
-### Usage: The code from a static library becomes part of your application, which makes the final application larger in size but independent of the library afterward.
+- Purpose: Static libraries are linked directly into your executable at compile time. This means the code from the library is included in the final .exe or binary file.
+- Usage: The code from a static library becomes part of your application, which makes the final application larger in size but independent of the library afterward.
 
 ## 3.2 Dynamic Libraries (DLLs in Windows, .so in Linux)
-### Purpose: Dynamic libraries are linked at runtime, meaning they are separate files (like .dll in Windows) that the application uses during execution. The main advantage is smaller executable size and the ability to update the DLL without recompiling the whole application.
-### Usage: The application loads the DLL at runtime and calls its functions.
+- Purpose: Dynamic libraries are linked at runtime, meaning they are separate files (like .dll in Windows) that the application uses during execution. The main advantage is smaller executable size and the ability to update the DLL without recompiling the whole application.
+- Usage: The application loads the DLL at runtime and calls its functions.
