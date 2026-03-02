@@ -51,7 +51,7 @@ int main()
     
     // Vertex Array Object
     VertexArray va;
-    va.Bind();
+    va.Bind(); 
 
     // Vertex Buffer Object
     VertexBuffer vb(vertices, sizeof(vertices));
