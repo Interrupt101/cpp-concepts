@@ -14,8 +14,8 @@ int multiply(int a, int b);
 ```
 
 # 2. Source Files (.cpp or .c)
-### Purpose: Source files contain the actual implementation (definitions) of functions, classes, and other constructs declared in header files.
-### Usage: The .cpp file includes the header file and provides the definitions for the functions declared in the header.
+- Purpose: Source files contain the actual implementation (definitions) of functions, classes, and other constructs declared in header files.
+- Usage: The .cpp file includes the header file and provides the definitions for the functions declared in the header.
 ```cpp
 // mathutils.cpp
 #include "mathutils.h"
