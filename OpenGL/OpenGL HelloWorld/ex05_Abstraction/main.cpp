@@ -1,5 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include "Shader.h"
 #include "Renderer.h"
@@ -43,6 +45,9 @@ int main()
         0, 1, 2,
         1, 2, 3
     };
+
+    GLCall(glEnable(GL_BLEND));
+    GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)); // SRC - DESTINATION
     
     // Vertex Array Object
     VertexArray va;
@@ -59,17 +64,24 @@ int main()
     layout.Push<float>(2); // texture coords
     va.AddBuffer(vb, layout);
 
+    glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+
     Shader shader("vertex.shader", "fragment.shader");
+    shader.use();
+
+    shader.setMat4("u_MVP", proj);
 
     Texture texture("image.png");
-    texture.Bind();
+    unsigned int slot = 0;
+    texture.Bind(slot);
+
     Renderer renderer;
 
     while (!glfwWindowShouldClose(window)) {
         renderer.SetClearColor(0.1f, 0.15f, 0.15f, 1.0f);
         renderer.Clear();
 
-        shader.setInt("u_Texture", 0);
+        shader.setInt("u_Texture", slot);
         renderer.Draw(va, ib, shader);
 
         glfwSwapBuffers(window);
