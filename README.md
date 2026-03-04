@@ -26,7 +26,7 @@ To get started with this repository, you need to have the following installed:
 ## Repository Structure
 The repository is organized to make learning C++ concepts easier. Each directory focuses on a specific type of content:
 cpp-concepts/
-│
+
 ├── topics/        # Core C++ concepts and examples
 ├── projects/      # Small projects applying C++ concepts
 ├── Labs/          # Practice exercises
