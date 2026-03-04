@@ -23,6 +23,54 @@ To get started with this repository, you need to have the following installed:
     cd cpp-concepts
     ```
 
+## Repository Structure
+The repository is organized to make learning C++ concepts easier. Each directory focuses on a specific type of content:
+cpp-concepts/
+│
+├── topics/        # Core C++ concepts and examples
+├── projects/      # Small projects applying C++ concepts
+├── Labs/          # Practice exercises
+├── OpenGL/        # OpenGL graphics programming examples
+├── Cheatsheets/   # Quick reference notes and summaries
+│
+└── README.md
+
+- **topics/** → Structured examples explaining core C++ concepts.
+- **projects/** → Practical applications using multiple concepts.
+- **Labs/** → Exercises to practice and reinforce knowledge.
+- **OpenGL/** → Graphics programming experiments and demos.
+- **Cheatsheets/** → Quick reference materials for important C++ features.
+
+---
+
+## Topics Covered
+
+This repository includes examples and explanations for many fundamental and advanced C++ topics, including:
+
+- C++ Basics
+- Pointers & References
+- Object-Oriented Programming (OOP)
+- Casting in C++
+- Smart Pointers
+- STL (Standard Template Library)
+- Modern C++ Features
+- Debugging Techniques
+- Compilation and Build Process
+- OpenGL Programming
+
+Each topic contains **well-commented examples** designed to help you understand the concepts step by step.
+
+---
+
+## How to Explore the Repository
+
+1. Start with the **topics/** directory to learn core C++ concepts.
+2. Practice using the exercises in **Labs/**.
+3. Apply what you've learned in the **projects/** directory.
+4. Use **Cheatsheets/** for quick references when needed.
+
+This structure allows you to **learn theory, practice it, and apply it in projects**.
+
 ## Usage
 
 ### Examples
