@@ -27,14 +27,6 @@ To get started with this repository, you need to have the following installed:
 The repository is organized to make learning C++ concepts easier. Each directory focuses on a specific type of content:
 cpp-concepts/
 
-├── topics/        # Core C++ concepts and examples
-├── projects/      # Small projects applying C++ concepts
-├── Labs/          # Practice exercises
-├── OpenGL/        # OpenGL graphics programming examples
-├── Cheatsheets/   # Quick reference notes and summaries
-│
-└── README.md
-
 - **topics/** → Structured examples explaining core C++ concepts.
 - **projects/** → Practical applications using multiple concepts.
 - **Labs/** → Exercises to practice and reinforce knowledge.
