@@ -22,10 +22,9 @@ To get started with this repository, you need to have the following installed:
     ```sh
     cd cpp-concepts
     ```
-
+ 
 ## Repository Structure
 The repository is organized to make learning C++ concepts easier. Each directory focuses on a specific type of content:
-cpp-concepts/
 
 - **topics/** → Structured examples explaining core C++ concepts.
 - **projects/** → Practical applications using multiple concepts.
